@@ -1,0 +1,18 @@
+import { Link } from 'react-router-dom'
+import styles from './PublicLayout.module.css'
+
+export default function PublicLayout({ children }) {
+  return (
+    <div className={styles.wrapper}>
+      <header className={styles.header}>
+        <Link to="/" className={styles.logo}>TrackSure</Link>
+        <nav className={styles.nav}>
+          <Link to="/signup">Sign Up</Link>
+          <Link to="/registration">Registration</Link>
+          <Link to="/login">Login</Link>
+        </nav>
+      </header>
+      <main className={styles.main}>{children}</main>
+    </div>
+  )
+}

@@ -1,0 +1,97 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  width: 100%;
+  max-width: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  text-transform: lowercase;
+  color: var(--accent);
+}
+
+.close {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.875rem;
+}
+
+.close:hover {
+  background: var(--bg-toggled);
+}
+
+.section {
+  margin-bottom: 1.25rem;
+}
+
+.section:last-of-type {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  text-transform: lowercase;
+  color: var(--accent);
+}
+
+.toggleGroup {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.toggle,
+.toggleActive {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-size: 0.875rem;
+  background: transparent;
+  color: var(--text);
+}
+
+.toggle:hover {
+  background: var(--bg-toggled);
+}
+
+.toggleActive {
+  background: var(--bg-toggled);
+  color: var(--accent);
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0.5rem 0 0 0;
+  line-height: 1.4;
+}

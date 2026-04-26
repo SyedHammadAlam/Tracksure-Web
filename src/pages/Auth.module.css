@@ -1,0 +1,99 @@
+.page {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  color: var(--accent);
+}
+
+.lead {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: -0.75rem 0 1.25rem 0;
+  line-height: 1.5;
+}
+
+.lead a {
+  color: var(--accent);
+}
+
+.success {
+  color: var(--accent);
+  font-size: 0.9rem;
+  margin: 0 0 1rem 0;
+}
+
+.error {
+  color: #ff6666;
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.input {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.uploadPlaceholder {
+  padding: 1.25rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  position: relative;
+}
+
+.fileInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.submit {
+  padding: 0.75rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-toggled);
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.submit:hover {
+  box-shadow: 0 0 12px var(--accent-glow);
+}

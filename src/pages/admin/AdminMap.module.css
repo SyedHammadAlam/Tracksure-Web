@@ -1,0 +1,12 @@
+.mapBlock {
+  margin-bottom: 1.5rem;
+}
+
+.mapHeading {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}

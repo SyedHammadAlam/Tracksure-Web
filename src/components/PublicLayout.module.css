@@ -1,0 +1,38 @@
+.wrapper {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-panel);
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.nav a {
+  color: var(--text-muted);
+}
+
+.nav a:hover {
+  color: var(--accent);
+}
+
+.main {
+  padding: 2rem 1.5rem;
+}

@@ -1,0 +1,91 @@
+.panel {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-panel);
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--accent);
+}
+
+.role {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.navLink,
+.navActive {
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+}
+
+.navActive {
+  background: var(--bg-toggled);
+  color: var(--accent);
+}
+
+.navLink:hover {
+  background: var(--bg-toggled);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.configBtn,
+.logoutBtn {
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 0.875rem;
+}
+
+.configBtn:hover,
+.logoutBtn:hover {
+  background: var(--bg-toggled);
+}
+
+.userName {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.main {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}

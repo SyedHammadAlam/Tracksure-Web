@@ -1,0 +1,264 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--accent);
+}
+
+.mapNote {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: -0.5rem 0 0 0;
+  line-height: 1.45;
+}
+
+.mapNote strong {
+  color: var(--accent);
+}
+
+.geoHint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.mapSectionTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.mapFrame {
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* A. Device Tracking Panel */
+.trackingPanel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.panelTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dataList {
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.dataRow {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  font-size: 0.9rem;
+}
+
+.dataRow dt {
+  margin: 0;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.dataRow dd {
+  margin: 0;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.statusSecure {
+  color: var(--accent) !important;
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+@media (max-width: 480px) {
+  .dataRow {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}
+
+/* B. Map placeholder */
+.mapSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mapPlaceholder {
+  position: relative;
+  min-height: 320px;
+  background: #0d0d0d;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.mapGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(57, 255, 20, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57, 255, 20, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.heatMapLabel {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.heatDots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.heatDot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* Security Score */
+.securityScore {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.scoreLabel {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.scoreValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-shadow: 0 0 12px var(--accent-glow);
+}
+
+.riskBadge {
+  font-size: 0.85rem;
+  color: var(--accent-dim);
+  font-weight: 600;
+}
+
+/* 12 Hour Report */
+.reportSection {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.reportToggle {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reportToggle:hover {
+  background: var(--bg-toggled);
+}
+
+.reportLog {
+  margin: 0;
+  padding: 0 1rem 1rem 1rem;
+  list-style: none;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.reportItem,
+.reportAlert {
+  font-size: 0.85rem;
+  padding: 0.35rem 0;
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(57, 255, 20, 0.1);
+}
+
+.reportAlert {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.reportTime {
+  font-weight: 600;
+  margin-right: 0.35rem;
+}
+
+/* C. SOS */
+.sosSection {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.sosButton {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
+  animation: sosPulse 2s ease-in-out infinite;
+}
+
+.sosButton:hover {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 28px var(--accent-glow);
+}
+
+@keyframes sosPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+  50% {
+    box-shadow: 0 0 32px var(--accent-glow), 0 0 40px rgba(57, 255, 20, 0.2);
+  }
+}
