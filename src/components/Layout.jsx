@@ -18,7 +18,10 @@ export default function Layout({ children }) {
   return (
     <div className={styles.wrapper}>
       <header className={styles.header}>
-        <Link to="/" className={styles.logo}>TrackSure</Link>
+        <Link to="/" className={styles.logo}>
+          <img src="/assets/tracksure-logo.png" alt="" className={styles.logoImage} />
+          <span>TrackSure</span>
+        </Link>
         <nav className={styles.nav}>
           {navItems.map(({ path, label }) => (
             <Link

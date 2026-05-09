@@ -1,14 +1,12 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useStolen } from '../../context/StolenContext'
-import ConfigPanel from '../../components/ConfigPanel'
 import StolenAlertBanner from '../../components/StolenAlertBanner'
 import styles from './UserLayout.module.css'
-import { useState } from 'react'
 
 const navItems = [
   { path: '/user/tracking', label: 'My Tracking' },
-  { path: '/user/mark-stolen', label: 'Mark as Stolen' },
+  { path: '/user/mark-stolen', label: 'Stolen Devices' },
 ]
 
 export default function UserLayout() {
@@ -16,7 +14,6 @@ export default function UserLayout() {
   const navigate = useNavigate()
   const { logout, user } = useAuth()
   const { isUserDeviceStolen } = useStolen()
-  const [configOpen, setConfigOpen] = useState(false)
 
   const showStolenAlert = user?.role === 'user' && isUserDeviceStolen(user.id)
 
@@ -29,6 +26,7 @@ export default function UserLayout() {
     <div className={styles.panel}>
       <header className={styles.header}>
         <div className={styles.brand}>
+          <img src="/assets/tracksure-logo.png" alt="" className={styles.logoImage} />
           <span className={styles.logo}>TrackSure</span>
           <span className={styles.role}>User Panel</span>
         </div>
@@ -44,9 +42,12 @@ export default function UserLayout() {
           ))}
         </nav>
         <div className={styles.actions}>
-          <button type="button" className={styles.configBtn} onClick={() => setConfigOpen(true)}>
-            ⚙ Settings
-          </button>
+          <Link
+            to="/user/settings"
+            className={location.pathname === '/user/settings' ? styles.configActive : styles.configBtn}
+          >
+            Settings
+          </Link>
           <span className={styles.userName}>{user?.name}</span>
           <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
             Logout
@@ -58,8 +59,6 @@ export default function UserLayout() {
         {showStolenAlert && <StolenAlertBanner />}
         <Outlet />
       </main>
-
-      <ConfigPanel open={configOpen} onClose={() => setConfigOpen(false)} />
     </div>
   )
 }

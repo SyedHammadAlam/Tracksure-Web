@@ -40,7 +40,7 @@ export default function Registration() {
     <div className={styles.page}>
       <h1 className={styles.title}>Registration (device details)</h1>
       <p className={styles.lead}>
-        Use the same <strong>User ID</strong> and <strong>password</strong> as on the server. Details are saved in
+        Use the same <strong>username</strong> and <strong>password</strong> as on the server. Details are saved in
         this browser only (CNIC / IMEI / MAC).
       </p>
       {error && <p className={styles.error}>{error}</p>}
@@ -51,14 +51,15 @@ export default function Registration() {
       )}
       <form className={styles.form} onSubmit={handleSubmit}>
         <label className={styles.label}>
-          User ID
+          Username
           <input
             type="text"
             className={styles.input}
-            placeholder="Your Sign Up User ID"
+            placeholder="Your sign up username"
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
             required
+            autoComplete="username"
           />
         </label>
         <label className={styles.label}>

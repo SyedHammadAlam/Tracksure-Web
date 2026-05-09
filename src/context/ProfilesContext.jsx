@@ -48,11 +48,11 @@ export function ProfilesProvider({ children }) {
 
   /** Register via tracksure-be; returns { ok, login?, error? } */
   const registerUser = useCallback(
-    async ({ id, name, email, phone, password }) => {
-      const trimmedId = id?.trim()
+    async ({ id, username, name, email, phone, password }) => {
+      const trimmedId = (username ?? id)?.trim()
       const trimmedEmail = email?.trim()
       if (!trimmedId || !password?.trim()) {
-        return { ok: false, error: 'User ID and password are required' }
+        return { ok: false, error: 'Username and password are required' }
       }
       if (!trimmedEmail) {
         return { ok: false, error: 'Email is required for server registration' }

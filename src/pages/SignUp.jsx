@@ -9,7 +9,7 @@ export default function SignUp() {
   const { applySessionFromLoginResponse } = useAuth()
   const navigate = useNavigate()
   const [name, setName] = useState('')
-  const [id, setId] = useState('')
+  const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
@@ -22,7 +22,7 @@ export default function SignUp() {
     setLoading(true)
     try {
       const result = await registerUser({
-        id,
+        username,
         name,
         email,
         phone,
@@ -45,9 +45,12 @@ export default function SignUp() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>Sign Up — Create profile</h1>
+      <div className={styles.authBrand}>
+        <img src="/assets/tracksure-logo.png" alt="TrackSure logo" className={styles.authLogo} />
+        <h1 className={styles.title}>Create TrackSure Profile</h1>
+      </div>
       <p className={styles.lead}>
-        Account is created on the <strong>TrackSure API</strong> (tracksure-be). Password must be at least 8
+        Account is created on the <strong>TrackSure API</strong> using your username. Password must be at least 8
         characters. You can add device details on <Link to="/registration">Registration</Link> before or after
         sign-in.
       </p>
@@ -65,15 +68,16 @@ export default function SignUp() {
           />
         </label>
         <label className={styles.label}>
-          User ID
+          Username
           <input
             type="text"
             className={styles.input}
-            placeholder="Unique login ID (maps to server username)"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
+            placeholder="Unique username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
             minLength={3}
+            autoComplete="username"
           />
         </label>
         <label className={styles.label}>
@@ -111,7 +115,7 @@ export default function SignUp() {
           />
         </label>
         <button type="submit" className={styles.submit} disabled={loading}>
-          {loading ? 'Creating…' : 'Create profile & sign in'}
+          {loading ? 'Creating...' : 'Create profile & sign in'}
         </button>
       </form>
     </div>

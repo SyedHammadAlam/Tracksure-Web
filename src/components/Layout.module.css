@@ -16,10 +16,21 @@
 }
 
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   font-weight: 700;
   font-size: 1.25rem;
   color: var(--accent);
   text-decoration: none;
+}
+
+.logoImage {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  object-fit: cover;
+  border: 1px solid var(--border);
 }
 
 .logo:hover {

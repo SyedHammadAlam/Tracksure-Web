@@ -16,8 +16,16 @@
 
 .brand {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.75rem;
+}
+
+.logoImage {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  object-fit: cover;
+  border: 1px solid var(--border);
 }
 
 .logo {
@@ -65,6 +73,7 @@
 }
 
 .configBtn,
+.configActive,
 .logoutBtn {
   padding: 0.4rem 0.75rem;
   border-radius: 8px;
@@ -72,11 +81,14 @@
   background: transparent;
   color: var(--text);
   font-size: 0.875rem;
+  text-decoration: none;
 }
 
 .configBtn:hover,
+.configActive,
 .logoutBtn:hover {
   background: var(--bg-toggled);
+  color: var(--accent);
 }
 
 .userName {

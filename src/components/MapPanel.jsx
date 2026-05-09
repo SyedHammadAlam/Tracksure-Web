@@ -1,19 +1,7 @@
 import { useMemo } from 'react'
 import styles from './MapPanel.module.css'
 
-function buildOsmEmbedUrl(markers, fitAll) {
-  const validMarkers = markers
-    .map((marker) => ({
-      ...marker,
-      lat: Number(marker.lat),
-      lng: Number(marker.lng),
-    }))
-    .filter((marker) => Number.isFinite(marker.lat) && Number.isFinite(marker.lng))
-
-  if (!validMarkers.length) {
-    return 'https://www.openstreetmap.org/export/embed.html?bbox=-118.5%2C33.9%2C-117.9%2C34.3&layer=mapnik'
-  }
-
+function buildOsmEmbedUrl(validMarkers, fitAll) {
   const lats = validMarkers.map((marker) => marker.lat)
   const lngs = validMarkers.map((marker) => marker.lng)
   const minLat = Math.min(...lats)
@@ -27,13 +15,45 @@ function buildOsmEmbedUrl(markers, fitAll) {
   const neLat = maxLat + pad
   const neLng = maxLng + pad
 
-  const center = validMarkers[0]
-  const markerQuery = `&marker=${center.lat}%2C${center.lng}`
+  const markerQuery = validMarkers
+    .map((marker) => `&marker=${encodeURIComponent(`${marker.lat},${marker.lng}`)}`)
+    .join('')
   return `https://www.openstreetmap.org/export/embed.html?bbox=${swLng}%2C${swLat}%2C${neLng}%2C${neLat}&layer=mapnik${markerQuery}`
 }
 
 function MapPanel({ markers = [], fitAll = false }) {
-  const embedUrl = useMemo(() => buildOsmEmbedUrl(markers, fitAll), [markers, fitAll])
+  const validMarkers = useMemo(
+    () =>
+      markers
+        .map((marker) => ({
+          ...marker,
+          lat: Number(marker.lat),
+          lng: Number(marker.lng),
+        }))
+        .filter((marker) => Number.isFinite(marker.lat) && Number.isFinite(marker.lng)),
+    [markers],
+  )
+
+  const embedUrl = useMemo(() => {
+    if (!validMarkers.length) return ''
+    return buildOsmEmbedUrl(validMarkers, fitAll)
+  }, [validMarkers, fitAll])
+
+  if (!validMarkers.length) {
+    return (
+      <div className={styles.wrap}>
+        <div className={styles.fallback}>
+          <h3 className={styles.fallbackTitle}>No location data yet</h3>
+          <p className={styles.hint}>
+            Devices will appear here after they report a GPS fix.
+          </p>
+          <p className={styles.hint}>
+            If you just linked a device, wait for the next upload cycle.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.wrap}>

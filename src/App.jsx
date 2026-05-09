@@ -8,6 +8,7 @@ import StolenRequests from './pages/admin/StolenRequests'
 import UserLayout from './pages/user/UserLayout'
 import UserTracking from './pages/user/UserTracking'
 import UserMarkAsStolen from './pages/user/UserMarkAsStolen'
+import UserSettings from './pages/user/UserSettings'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import Registration from './pages/Registration'
@@ -51,6 +52,7 @@ export default function App() {
         <Route index element={<Navigate to="/user/tracking" replace />} />
         <Route path="tracking" element={<UserTracking />} />
         <Route path="mark-stolen" element={<UserMarkAsStolen />} />
+        <Route path="settings" element={<UserSettings />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

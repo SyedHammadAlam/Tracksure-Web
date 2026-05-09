@@ -56,7 +56,7 @@ export function AuthProvider({ children }) {
     async (username, password) => {
       const trimmed = username?.trim()
       if (!trimmed || !password?.trim()) {
-        return { ok: false, error: 'ID and password required' }
+        return { ok: false, error: 'Username and password required' }
       }
       const r = await authApi.login({ username: trimmed, password })
       if (!r.ok) {
@@ -83,6 +83,14 @@ export function AuthProvider({ children }) {
     persist(null)
   }, [user, persist])
 
+  const updateCurrentUser = useCallback(
+    (updates) => {
+      if (!user) return
+      persist({ ...user, ...updates })
+    },
+    [user, persist],
+  )
+
   return (
     <AuthContext.Provider
       value={{
@@ -90,6 +98,7 @@ export function AuthProvider({ children }) {
         loginAsAdmin,
         loginAsUser,
         applySessionFromLoginResponse,
+        updateCurrentUser,
         logout,
         isAdmin: user?.role === 'admin',
         isUser: user?.role === 'user',

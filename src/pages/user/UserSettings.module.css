@@ -1,0 +1,242 @@
+.settingsPage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  margin: 0 0 0.35rem 0;
+  color: var(--accent);
+  font-size: 1.55rem;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--bg-toggled);
+  color: var(--accent);
+  font-size: 1.35rem;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.accountCard,
+.profileCard {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: var(--accent);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.infoList {
+  margin: 1rem 0;
+}
+
+.infoList div {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(57, 255, 20, 0.18);
+}
+
+.infoList dt {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  margin-bottom: 0.25rem;
+}
+
+.infoList dd {
+  margin: 0;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.formHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.status,
+.success {
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+.error {
+  color: #ff6666;
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+}
+
+.success {
+  margin: 0 0 1rem 0;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+  color: var(--text);
+  font-size: 0.875rem;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 105px;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.input:disabled,
+.textarea:disabled {
+  opacity: 0.65;
+}
+
+.settingsList {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.settingItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(57, 255, 20, 0.25);
+  border-radius: 8px;
+  background: rgba(57, 255, 20, 0.04);
+}
+
+.settingItem small {
+  color: var(--text-muted);
+}
+
+.toggleGroup {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.toggle,
+.toggleActive {
+  min-width: 72px;
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.toggle:hover,
+.toggleActive {
+  background: var(--bg-toggled);
+  color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.logoutBtn,
+.secondaryBtn,
+.saveBtn {
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.logoutBtn,
+.secondaryBtn {
+  background: transparent;
+  color: var(--text);
+}
+
+.saveBtn {
+  background: var(--bg-toggled);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.logoutBtn:hover,
+.secondaryBtn:hover,
+.saveBtn:hover {
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.saveBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+@media (max-width: 800px) {
+  .headingRow {
+    align-items: flex-start;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+}

@@ -7,6 +7,9 @@ import { StolenProvider } from './context/StolenContext'
 import App from './App'
 import './index.css'
 
+const savedTheme = localStorage.getItem('tracksure_theme') || 'dark'
+document.documentElement.dataset.theme = savedTheme
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>

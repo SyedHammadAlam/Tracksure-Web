@@ -24,6 +24,7 @@ export default function AdminLayout() {
     <div className={styles.panel}>
       <header className={styles.header}>
         <div className={styles.brand}>
+          <img src="/assets/tracksure-logo.png" alt="" className={styles.logoImage} />
           <span className={styles.logo}>TrackSure</span>
           <span className={styles.role}>Admin Panel</span>
         </div>

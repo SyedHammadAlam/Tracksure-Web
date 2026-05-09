@@ -4,7 +4,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  background: #0d0d0d;
+  background: var(--bg-subtle);
 }
 
 .fallback {
@@ -54,4 +54,6 @@
   min-height: 320px;
   height: 100%;
   border: 0;
+  background: var(--bg-subtle);
+  display: block;
 }
