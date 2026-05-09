@@ -19,8 +19,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       </ProfilesProvider>
     </BrowserRouter>
   </React.StrictMode>,
-<<<<<<< HEAD
 )
-=======
-)
->>>>>>> 7dbea72 (Second Update)
+

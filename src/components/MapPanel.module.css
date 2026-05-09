@@ -7,6 +7,7 @@
   background: #0d0d0d;
 }
 
+/* fallback kept for legacy; MapPanel now uses OSM embed */
 .fallback {
   min-height: 320px;
   display: flex;
@@ -21,6 +22,7 @@
   font-size: 0.875rem;
   line-height: 1.5;
 }
+
 
 .fallbackTitle {
   margin: 0;
