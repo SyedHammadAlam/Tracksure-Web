@@ -147,34 +147,15 @@ export function ProfilesProvider({ children }) {
         cnic: existing?.cnic || '',
         imei: existing?.imei || '',
         mac: existing?.mac || '',
-        // Support multiple backend response shapes
-        // Expected (older): lastLatitude/lastLongitude/lastLocationAt
-        // Possible (newer): latitude/longitude/lastLocationAt, lat/lng, location.{lat,lon}, or nested lastLocation
-        lat: (() => {
-          const v =
-            me?.lastLatitude ??
-            me?.latitude ??
-            me?.lat ??
-            me?.location?.lat ??
-            me?.lastLocation?.lat
-          return v != null ? Number(v) : existing?.lat ?? defaultCoords.lat
-        })(),
-        lng: (() => {
-          const v =
-            me?.lastLongitude ??
-            me?.longitude ??
-            me?.lng ??
-            me?.location?.lon ??
-            me?.location?.lng ??
-            me?.lastLocation?.lon ??
-            me?.lastLocation?.lng
-          return v != null ? Number(v) : existing?.lng ?? defaultCoords.lng
-        })(),
-        updatedAt:
-          me?.lastLocationAt ??
-          me?.lastLocation?.recordedAt ??
-          me?.updatedAt ??
-          new Date().toISOString(),
+        lat:
+          me.lastLatitude != null
+            ? me.lastLatitude
+            : (existing?.lat ?? defaultCoords.lat),
+        lng:
+          me.lastLongitude != null
+            ? me.lastLongitude
+            : (existing?.lng ?? defaultCoords.lng),
+        updatedAt: me.lastLocationAt || new Date().toISOString(),
       }
       persist([...profiles.filter((p) => p.id !== id), row])
     },
