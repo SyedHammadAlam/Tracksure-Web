@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react'
 import { ADMIN_API_SECRET } from '../../config'
-import { fetchAdminUserLocations } from '../../api/adminApi'
+import { fetchAdminUserLocations, fetchAllDevices } from '../../api/adminApi'
 import MapPanel from '../../components/MapPanel'
+import DeviceList from '../../components/DeviceList'
 import styles from './AdminPanels.module.css'
 import mapStyles from './AdminMap.module.css'
 
@@ -17,6 +18,9 @@ export default function AllTracking() {
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  const [devices, setDevices] = useState([])
+  const [devicesLoading, setDevicesLoading] = useState(false)
+  const [devicesError, setDevicesError] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -32,6 +36,26 @@ export default function AllTracking() {
         setItems(r.items)
       }
       setLoading(false)
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      setDevicesLoading(true)
+      setDevicesError('')
+      const devicesRes = await fetchAllDevices(ADMIN_API_SECRET)
+      if (cancelled) return
+      if (devicesRes.ok) {
+        setDevices(Array.isArray(devicesRes.data) ? devicesRes.data : [])
+      } else {
+        setDevicesError(devicesRes.error || 'Failed to load devices')
+        setDevices([])
+      }
+      setDevicesLoading(false)
     })()
     return () => {
       cancelled = true
@@ -79,50 +103,62 @@ export default function AllTracking() {
       {loading && <p className={styles.empty}>Loading…</p>}
       {error && <p className={styles.error}>{error}</p>}
 
-      <div className={mapStyles.mapBlock}>
-        <h2 className={mapStyles.mapHeading}>Google Map — all users</h2>
-        {!loading && items.length === 0 && !error ? (
-          <p className={styles.empty}>No registered users in the database.</p>
-        ) : items.length > 0 ? (
-          <MapPanel markers={markers} fitAll />
-        ) : null}
-      </div>
+      <div className={styles.adminContainer}>
+        <div className={styles.mainContent}>
+          <div className={mapStyles.mapBlock}>
+            <h2 className={mapStyles.mapHeading}>Google Map — all users</h2>
+            {!loading && items.length === 0 && !error ? (
+              <p className={styles.empty}>No registered users in the database.</p>
+            ) : items.length > 0 ? (
+              <MapPanel markers={markers} fitAll />
+            ) : null}
+          </div>
 
-      <div className={styles.tableWrap}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>User name</th>
-              <th>User ID</th>
-              <th>Email</th>
-              <th>Location (lat, lng)</th>
-              <th>Last location</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.length === 0 && !loading ? (
-              <tr>
-                <td colSpan={5} className={styles.empty}>
-                  No users.
-                </td>
-              </tr>
-            ) : (
-              items.map((row) => (
-                <tr key={row.userId}>
-                  <td>{row.username}</td>
-                  <td>{row.userId}</td>
-                  <td>{row.email}</td>
-                  <td>{formatCoords(row)}</td>
-                  <td>
-                    {row.lastLocationAt
-                      ? new Date(row.lastLocationAt).toLocaleString()
-                      : '—'}
-                  </td>
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>User name</th>
+                  <th>User ID</th>
+                  <th>Email</th>
+                  <th>Location (lat, lng)</th>
+                  <th>Last location</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {items.length === 0 && !loading ? (
+                  <tr>
+                    <td colSpan={5} className={styles.empty}>
+                      No users.
+                    </td>
+                  </tr>
+                ) : (
+                  items.map((row) => (
+                    <tr key={row.userId}>
+                      <td>{row.username}</td>
+                      <td>{row.userId}</td>
+                      <td>{row.email}</td>
+                      <td>{formatCoords(row)}</td>
+                      <td>
+                        {row.lastLocationAt
+                          ? new Date(row.lastLocationAt).toLocaleString()
+                          : '—'}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className={styles.adminSidePanel}>
+          <DeviceList
+            devices={devices}
+            loading={devicesLoading}
+            error={devicesError}
+          />
+        </div>
       </div>
     </div>
   )

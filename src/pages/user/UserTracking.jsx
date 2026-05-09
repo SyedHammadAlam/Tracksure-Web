@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useProfiles } from '../../context/ProfilesContext'
-import { getMe, postMyLocation } from '../../api/meApi'
+import { getMe, postMyLocation, getMyDevices, getMyLocations } from '../../api/meApi'
 import MapPanel from '../../components/MapPanel'
+import DeviceList from '../../components/DeviceList'
 import styles from '../DeviceLocation.module.css'
 
 const MOCK_REPORT = [
@@ -27,6 +28,9 @@ export default function UserTracking() {
   const [reportExpanded, setReportExpanded] = useState(true)
   const [geoStatus, setGeoStatus] = useState('')
   const [apiStatus, setApiStatus] = useState('')
+  const [devices, setDevices] = useState([])
+  const [devicesLoading, setDevicesLoading] = useState(false)
+  const [devicesError, setDevicesError] = useState('')
 
   const profile = user?.id ? getProfile(user.id) : null
   const token = user?.accessToken
@@ -50,38 +54,40 @@ export default function UserTracking() {
   }, [token, upsertFromMeResponse])
 
   useEffect(() => {
-    if (!user?.id) return
-    if (!navigator.geolocation) {
-      setGeoStatus('Geolocation not supported; showing saved or default coordinates.')
-      return
+    if (!token) return
+    let cancelled = false
+    ;(async () => {
+      setDevicesLoading(true)
+      setDevicesError('')
+      const devicesRes = await getMyDevices(token)
+      if (cancelled) return
+      if (devicesRes.ok) {
+        setDevices(Array.isArray(devicesRes.data) ? devicesRes.data : [])
+      } else {
+        setDevicesError(devicesRes.error || 'Failed to load devices')
+        setDevices([])
+      }
+      setDevicesLoading(false)
+    })()
+    return () => {
+      cancelled = true
     }
-    setGeoStatus('Requesting your current location…')
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords
-        updateLocation(user.id, latitude, longitude)
-        setGeoStatus('Location updated.')
-        if (token) {
-          const sync = await postMyLocation(token, latitude, longitude)
-          if (!sync.ok) {
-            setGeoStatus(`Saved locally; server sync failed: ${sync.error}`)
-          }
-        }
-      },
-      () => {
-        setGeoStatus('Could not read GPS; showing last saved location.')
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- avoid re-running when profile state updates
-  }, [user?.id, token])
+  }, [token])
+
+  // Location display comes from backend (server /api/me via getMe + upsertFromMeResponse)
+  // (UserTracking renders lat/lng from ProfilesContext, which is updated after getMe.)
+  useEffect(() => {
+    if (!token) return
+    setGeoStatus('Loading location from server…')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token])
 
   const displayName = profile?.name || user?.name || 'User'
+
   const deviceName = `${displayName}'s Device`
-  const refreshed = user?.id ? getProfile(user.id) : null
-  const time = formatTime(refreshed?.updatedAt)
-  const lat = refreshed?.lat ?? 34.0522
-  const lng = refreshed?.lng ?? -118.2437
+  const time = formatTime(profile?.updatedAt)
+  const lat = profile?.lat ?? 34.0522
+  const lng = profile?.lng ?? -118.2437
   const locationStr = `Latitude: ${Number(lat).toFixed(4)}, Longitude: ${Number(lng).toFixed(4)}`
   const status = 'Secure / Online'
 
@@ -131,35 +137,46 @@ export default function UserTracking() {
       </section>
 
       <section className={styles.mapSection}>
-        <h2 className={styles.mapSectionTitle}>Live location (Google Maps)</h2>
-        <div className={styles.mapFrame}>
-          <MapPanel markers={markers} fitAll={false} />
-        </div>
+        <div className={styles.mapContainer}>
+          <div className={styles.mapWrapper}>
+            <h2 className={styles.mapSectionTitle}>Live location (Google Maps)</h2>
+            <div className={styles.mapFrame}>
+              <MapPanel markers={markers} fitAll={false} />
+            </div>
 
-        <div className={styles.securityScore}>
-          <span className={styles.scoreLabel}>Security Score:</span>
-          <span className={styles.scoreValue}>85/100</span>
-          <span className={styles.riskBadge}>(LOW Risk)</span>
-        </div>
+            <div className={styles.securityScore}>
+              <span className={styles.scoreLabel}>Security Score:</span>
+              <span className={styles.scoreValue}>85/100</span>
+              <span className={styles.riskBadge}>(LOW Risk)</span>
+            </div>
 
-        <div className={styles.reportSection}>
-          <button
-            type="button"
-            className={styles.reportToggle}
-            onClick={() => setReportExpanded((e) => !e)}
-            aria-expanded={reportExpanded}
-          >
-            12 Hour Update Report {reportExpanded ? '▼' : '▶'}
-          </button>
-          {reportExpanded && (
-            <ul className={styles.reportLog}>
-              {MOCK_REPORT.map((entry, i) => (
-                <li key={i} className={entry.alert ? styles.reportAlert : styles.reportItem}>
-                  <span className={styles.reportTime}>{entry.time}:</span> {entry.text}
-                </li>
-              ))}
-            </ul>
-          )}
+            <div className={styles.reportSection}>
+              <button
+                type="button"
+                className={styles.reportToggle}
+                onClick={() => setReportExpanded((e) => !e)}
+                aria-expanded={reportExpanded}
+              >
+                12 Hour Update Report {reportExpanded ? '▼' : '▶'}
+              </button>
+              {reportExpanded && (
+                <ul className={styles.reportLog}>
+                  {MOCK_REPORT.map((entry, i) => (
+                    <li key={i} className={entry.alert ? styles.reportAlert : styles.reportItem}>
+                      <span className={styles.reportTime}>{entry.time}:</span> {entry.text}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+          <div className={styles.sidePanel}>
+            <DeviceList
+              devices={devices}
+              loading={devicesLoading}
+              error={devicesError}
+            />
+          </div>
         </div>
       </section>
 

@@ -48,3 +48,10 @@
   margin: 0;
   font-size: 0.8rem;
 }
+
+.iframe {
+  width: 100%;
+  min-height: 320px;
+  height: 100%;
+  border: 0;
+}
