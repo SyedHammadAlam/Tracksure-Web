@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useProfiles } from '../../context/ProfilesContext'
-import { getMe, postMyLocation, getMyDevices, getMyLocations } from '../../api/meApi'
+import { getMe, getMyDevices, getMyLocations } from '../../api/meApi'
+
 import MapPanel from '../../components/MapPanel'
 import DeviceList from '../../components/DeviceList'
 import styles from '../DeviceLocation.module.css'
@@ -42,6 +43,7 @@ export default function UserTracking() {
       const r = await getMe(token)
       if (cancelled) return
       if (r.ok) {
+        // Keep profile fields (name/email/etc.) in sync, but location will come from /v1/location/me.
         upsertFromMeResponse(r.data)
         setApiStatus('Synced account from server.')
       } else {
@@ -52,6 +54,7 @@ export default function UserTracking() {
       cancelled = true
     }
   }, [token, upsertFromMeResponse])
+
 
   useEffect(() => {
     if (!token) return
@@ -74,13 +77,55 @@ export default function UserTracking() {
     }
   }, [token])
 
-  // Location display comes from backend (server /api/me via getMe + upsertFromMeResponse)
-  // (UserTracking renders lat/lng from ProfilesContext, which is updated after getMe.)
+  // Fetch latest location from newer endpoint (/v1/location/me)
   useEffect(() => {
     if (!token) return
-    setGeoStatus('Loading location from server…')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token])
+    let cancelled = false
+
+    ;(async () => {
+      setGeoStatus('Loading location from server…')
+
+      const locRes = await getMyLocations(token)
+      if (cancelled) return
+
+      if (!locRes.ok) {
+        setGeoStatus('Could not load location from server')
+        return
+      }
+
+      // Expected shape: array of location records. We pick most recent.
+      const items = Array.isArray(locRes.data) ? locRes.data : []
+      const latest = items[0]
+
+      if (!latest) {
+        setGeoStatus('No saved location found yet')
+        return
+      }
+
+      // upsertFromMeResponse expects a /api/me-like object; map fields.
+      const mapped = {
+        userId: profile?.id || user?.id,
+        username: user?.username || user?.id,
+        lastLatitude: latest.lat ?? latest.latitude,
+        lastLongitude: latest.lng ?? latest.lon ?? latest.longitude,
+        lastLocationAt:
+          latest.lastLocationAt ?? latest.recordedAt ?? latest.timestamp ?? latest.time,
+        // Provide fallbacks too
+        lat: latest.lat ?? latest.latitude,
+        lng: latest.lng ?? latest.lon ?? latest.longitude,
+        updatedAt: latest.updatedAt ?? latest.recordedAt,
+      }
+
+      upsertFromMeResponse(mapped)
+      setGeoStatus('Location updated from server.')
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [token, upsertFromMeResponse, profile?.id, user?.id, user?.username])
+
+
 
   const displayName = profile?.name || user?.name || 'User'
 
