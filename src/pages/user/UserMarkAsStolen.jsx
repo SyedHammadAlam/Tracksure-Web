@@ -17,11 +17,13 @@ function formatTimestamp(value) {
   return date.toLocaleString()
 }
 
-function formatCoords(report) {
-  const lat = Number(report?.latitude)
-  const lng = Number(report?.longitude)
-  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return 'Not available'
-  return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
+function hasUsableLocation(location) {
+  return Number.isFinite(Number(location?.latitude)) && Number.isFinite(Number(location?.longitude))
+}
+
+function formatLocationName(location) {
+  if (!location) return 'No latest location found'
+  return location.formattedAddress || location.address || location.city || 'Latest saved location is ready'
 }
 
 function deviceLabel(device) {
@@ -37,8 +39,6 @@ export default function UserMarkAsStolen() {
   const [locationsByDeviceId, setLocationsByDeviceId] = useState({})
   const [reports, setReports] = useState([])
   const [selectedDeviceId, setSelectedDeviceId] = useState('')
-  const [latitude, setLatitude] = useState('')
-  const [longitude, setLongitude] = useState('')
   const [selectedDetails, setSelectedDetails] = useState(null)
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -50,6 +50,9 @@ export default function UserMarkAsStolen() {
     () => devices.find((device) => String(device.deviceId) === String(selectedDeviceId)),
     [devices, selectedDeviceId],
   )
+
+  const selectedLocation = selectedDeviceId ? locationsByDeviceId[selectedDeviceId] : null
+  const canReport = Boolean(selectedDeviceId) && hasUsableLocation(selectedLocation)
 
   const loadData = async () => {
     if (!token) return
@@ -96,17 +99,13 @@ export default function UserMarkAsStolen() {
     loadData()
   }, [token])
 
-  useEffect(() => {
-    if (!selectedDeviceId) return
-    const location = locationsByDeviceId[selectedDeviceId]
-    if (!location) return
-    setLatitude(String(location.latitude ?? ''))
-    setLongitude(String(location.longitude ?? ''))
-  }, [selectedDeviceId, locationsByDeviceId])
-
   const handleReport = async (event) => {
     event.preventDefault()
     if (!token || saving) return
+    if (!canReport) {
+      setError('This device needs a latest location before it can be reported stolen.')
+      return
+    }
 
     setSaving(true)
     setError('')
@@ -114,8 +113,8 @@ export default function UserMarkAsStolen() {
 
     const result = await reportStolenDevice(token, {
       deviceId: Number(selectedDeviceId),
-      latitude: Number(latitude),
-      longitude: Number(longitude),
+      latitude: Number(selectedLocation.latitude),
+      longitude: Number(selectedLocation.longitude),
     })
 
     if (result.ok) {
@@ -160,61 +159,56 @@ export default function UserMarkAsStolen() {
 
   return (
     <div className={styles.page}>
-      <section className={styles.panelCard}>
-        <h1 className={styles.title}>Stolen Device Report</h1>
-        <p className={styles.subtitle}>
-          Report a lost or stolen device using its latest known coordinates. The backend stores the report and geocodes
-          the location automatically.
-        </p>
+      <section className={styles.heroPanel}>
+        <div>
+          <p className={styles.kicker}>Incident report</p>
+          <h1 className={styles.title}>Report a Stolen Device</h1>
+          <p className={styles.subtitle}>
+            Select the device and TrackSure will use its latest saved location for the report.
+          </p>
+        </div>
+        <div className={styles.heroStats}>
+          <span>{reports.filter((report) => !report.isRecovered).length}</span>
+          <small>Active reports</small>
+        </div>
+      </section>
 
+      <section className={styles.panelCard}>
         {error && <p className={styles.formError}>{error}</p>}
         {message && <p className={styles.success}>{message}</p>}
 
         <form className={styles.form} onSubmit={handleReport}>
-          <label className={styles.label}>
-            Device
-            <select
-              className={styles.input}
-              value={selectedDeviceId}
-              onChange={(event) => setSelectedDeviceId(event.target.value)}
-              disabled={loading || saving}
-              required
-            >
-              <option value="">Select device</option>
-              {devices.map((device) => (
-                <option key={device.deviceId} value={device.deviceId}>
-                  {deviceLabel(device)}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div className={styles.reportGrid}>
+            <label className={styles.label}>
+              Device
+              <select
+                className={styles.input}
+                value={selectedDeviceId}
+                onChange={(event) => setSelectedDeviceId(event.target.value)}
+                disabled={loading || saving}
+                required
+              >
+                <option value="">Select device</option>
+                {devices.map((device) => (
+                  <option key={device.deviceId} value={device.deviceId}>
+                    {deviceLabel(device)}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          <div className={styles.grid}>
-            <label className={styles.label}>
-              Latitude
-              <input
-                type="number"
-                step="any"
-                className={styles.input}
-                value={latitude}
-                onChange={(event) => setLatitude(event.target.value)}
-                required
-              />
-            </label>
-            <label className={styles.label}>
-              Longitude
-              <input
-                type="number"
-                step="any"
-                className={styles.input}
-                value={longitude}
-                onChange={(event) => setLongitude(event.target.value)}
-                required
-              />
-            </label>
+            <div className={canReport ? styles.locationCard : styles.locationCardWarning}>
+              <span>{canReport ? 'Location ready' : 'Location needed'}</span>
+              <strong>{formatLocationName(selectedLocation)}</strong>
+              <small>
+                {canReport
+                  ? 'This saved location will be attached automatically.'
+                  : 'Open tracking or sync the device before submitting a report.'}
+              </small>
+            </div>
           </div>
 
-          <button type="submit" className={styles.submit} disabled={loading || saving || !selectedDeviceId}>
+          <button type="submit" className={styles.submit} disabled={loading || saving || !canReport}>
             {saving ? 'Reporting...' : 'Report stolen'}
           </button>
         </form>
@@ -246,7 +240,7 @@ export default function UserMarkAsStolen() {
               <li key={report.id || report.deviceId} className={styles.reportItem}>
                 <div>
                   <strong>Device {report.deviceId}</strong>
-                  <p>{report.formattedAddress || report.city || formatCoords(report)}</p>
+                  <p>{report.formattedAddress || report.city || 'Saved report location'}</p>
                   <small>Reported {formatTimestamp(report.timestamp || report.createdAt)}</small>
                 </div>
                 <div className={styles.reportActions}>
@@ -284,11 +278,7 @@ export default function UserMarkAsStolen() {
               <dd>{selectedDetails.deviceId}</dd>
             </div>
             <div>
-              <dt>Coordinates</dt>
-              <dd>{formatCoords(selectedDetails)}</dd>
-            </div>
-            <div>
-              <dt>Address</dt>
+              <dt>Report location</dt>
               <dd>{selectedDetails.formattedAddress || 'Not available'}</dd>
             </div>
             <div>

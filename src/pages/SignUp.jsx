@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useProfiles } from '../context/ProfilesContext'
 import styles from './Auth.module.css'
@@ -8,24 +8,25 @@ export default function SignUp() {
   const { registerUser } = useProfiles()
   const { applySessionFromLoginResponse } = useAuth()
   const navigate = useNavigate()
-  const [name, setName] = useState('')
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
     setLoading(true)
     try {
       const result = await registerUser({
         username,
-        name,
         email,
-        phone,
         password,
       })
       if (!result.ok) {
@@ -33,7 +34,7 @@ export default function SignUp() {
         return
       }
       if (result.login) {
-        applySessionFromLoginResponse(result.login, { displayName: name })
+        applySessionFromLoginResponse(result.login)
         navigate('/user/tracking', { replace: true })
       } else {
         navigate('/login', { replace: true })
@@ -49,24 +50,8 @@ export default function SignUp() {
         <img src="/assets/tracksure-logo.png" alt="TrackSure logo" className={styles.authLogo} />
         <h1 className={styles.title}>Create TrackSure Profile</h1>
       </div>
-      <p className={styles.lead}>
-        Account is created on the <strong>TrackSure API</strong> using your username. Password must be at least 8
-        characters. You can add device details on <Link to="/registration">Registration</Link> before or after
-        sign-in.
-      </p>
       {error && <p className={styles.error}>{error}</p>}
       <form className={styles.form} onSubmit={handleSubmit}>
-        <label className={styles.label}>
-          Name
-          <input
-            type="text"
-            className={styles.input}
-            placeholder="Full name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </label>
         <label className={styles.label}>
           Username
           <input
@@ -92,16 +77,6 @@ export default function SignUp() {
           />
         </label>
         <label className={styles.label}>
-          Phone
-          <input
-            type="tel"
-            className={styles.input}
-            placeholder="Phone number (stored locally only)"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-        </label>
-        <label className={styles.label}>
           Password
           <input
             type="password"
@@ -109,6 +84,19 @@ export default function SignUp() {
             placeholder="At least 8 characters"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
+            autoComplete="new-password"
+          />
+        </label>
+        <label className={styles.label}>
+          Confirm password
+          <input
+            type="password"
+            className={styles.input}
+            placeholder="Repeat your password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
             minLength={8}
             autoComplete="new-password"

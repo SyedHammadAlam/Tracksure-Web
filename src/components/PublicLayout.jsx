@@ -11,7 +11,6 @@ export default function PublicLayout({ children }) {
         </Link>
         <nav className={styles.nav}>
           <Link to="/signup">Sign Up</Link>
-          <Link to="/registration">Registration</Link>
           <Link to="/login">Login</Link>
         </nav>
       </header>

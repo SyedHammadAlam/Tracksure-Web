@@ -1,6 +1,20 @@
 .page {
   display: grid;
-  gap: 1rem;
+  gap: 1.15rem;
+  max-width: 1040px;
+}
+
+.heroPanel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  background:
+    linear-gradient(135deg, rgba(57, 255, 20, 0.12), transparent 42%),
+    var(--bg-panel);
 }
 
 .panelCard {
@@ -8,13 +22,46 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.5rem;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
+}
+
+.kicker {
+  margin: 0 0 0.4rem 0;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .title {
-  font-size: 1.35rem;
+  font-size: 1.65rem;
   font-weight: 700;
   margin: 0 0 0.35rem 0;
   color: var(--accent);
+}
+
+.heroStats {
+  min-width: 150px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  background: var(--bg-subtle);
+  text-align: right;
+}
+
+.heroStats span {
+  display: block;
+  color: var(--accent);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.heroStats small {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
 }
 
 .sectionTitle {
@@ -49,13 +96,13 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-width: 640px;
 }
 
-.grid {
+.reportGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.85rem;
+  grid-template-columns: minmax(240px, 0.8fr) minmax(280px, 1.2fr);
+  gap: 1rem;
+  align-items: end;
 }
 
 .label {
@@ -80,6 +127,50 @@
   box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
+.locationCard,
+.locationCardWarning {
+  display: grid;
+  gap: 0.3rem;
+  min-height: 84px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  background: var(--bg-subtle);
+}
+
+.locationCard span,
+.locationCardWarning span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.locationCard span {
+  color: var(--accent);
+}
+
+.locationCardWarning {
+  border-color: rgba(255, 102, 102, 0.65);
+}
+
+.locationCardWarning span {
+  color: #ff6666;
+}
+
+.locationCard strong,
+.locationCardWarning strong {
+  color: var(--text);
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.locationCard small,
+.locationCardWarning small {
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
 .submit,
 .submitSmall,
 .secondaryBtn {
@@ -94,6 +185,8 @@
   padding: 0.75rem 1.25rem;
   font-size: 1rem;
   margin-top: 0.25rem;
+  align-self: flex-start;
+  min-width: 180px;
 }
 
 .submitSmall,
@@ -151,7 +244,7 @@
   gap: 1rem;
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 0.85rem;
+  padding: 1rem;
   background: var(--bg-subtle);
 }
 
@@ -205,7 +298,7 @@
 
 .detailsList div {
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--bg-subtle);
   padding: 0.75rem;
 }
@@ -225,11 +318,21 @@
 }
 
 @media (max-width: 720px) {
-  .grid,
+  .heroPanel,
+  .reportGrid,
   .reportItem,
   .sectionHeader {
     grid-template-columns: 1fr;
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .heroStats {
+    min-width: 0;
+    text-align: left;
+  }
+
+  .submit {
+    width: 100%;
   }
 }
