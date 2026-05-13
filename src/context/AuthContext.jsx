@@ -3,16 +3,24 @@ import * as authApi from '../api/authApi'
 
 const AuthContext = createContext(null)
 
-// Hardcoded admin password (demo only) — must match VITE_ADMIN_API_SECRET / backend ADMIN_SECRET for map API
-const ADMIN_PASSWORD = 'admin123'
-
 function sessionFromLoginResponse(data) {
+  // Some backends nest user data inside a 'user' object
+  const source = data.user || data;
+
+  // Extract role string from various possible field names/structures
+  const roleValue = source.role || 
+                   (Array.isArray(source.roles) ? source.roles[0] : null) || 
+                   (Array.isArray(source.authorities) ? source.authorities[0]?.authority : null) || 
+                   '';
+
+  const normalizedRole = String(roleValue).toLowerCase().includes('admin') ? 'admin' : 'user';
+
   return {
-    role: 'user',
-    id: String(data.userId),
-    username: data.username,
-    name: data.username,
-    email: data.email,
+    role: normalizedRole,
+    id: String(source.userId || source.id || ''),
+    username: source.username,
+    name: source.username || source.name,
+    email: source.email,
     accessToken: data.accessToken,
     refreshToken: data.refreshToken,
   }
@@ -46,13 +54,8 @@ export function AuthProvider({ children }) {
     [persist],
   )
 
-  const loginAsAdmin = useCallback((password) => {
-    if (password !== ADMIN_PASSWORD) return { ok: false, error: 'Invalid admin password' }
-    persist({ role: 'admin', id: 'admin', name: 'Admin' })
-    return { ok: true }
-  }, [persist])
 
-  const loginAsUser = useCallback(
+  const login = useCallback(
     async (username, password) => {
       const trimmed = username?.trim()
       if (!trimmed || !password?.trim()) {
@@ -73,7 +76,7 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(async () => {
     const refresh = user?.refreshToken
-    if (user?.role === 'user' && refresh) {
+    if (refresh) {
       try {
         await authApi.logout(refresh)
       } catch {
@@ -95,13 +98,12 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
-        loginAsAdmin,
-        loginAsUser,
+        login,
         applySessionFromLoginResponse,
         updateCurrentUser,
         logout,
         isAdmin: user?.role === 'admin',
-        isUser: user?.role === 'user',
+        isUser: user?.role === 'user' || user?.role === 'customer',
       }}
     >
       {children}

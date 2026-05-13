@@ -196,16 +196,6 @@ export default function UserMarkAsStolen() {
                 ))}
               </select>
             </label>
-
-            <div className={canReport ? styles.locationCard : styles.locationCardWarning}>
-              <span>{canReport ? 'Location ready' : 'Location needed'}</span>
-              <strong>{formatLocationName(selectedLocation)}</strong>
-              <small>
-                {canReport
-                  ? 'This saved location will be attached automatically.'
-                  : 'Open tracking or sync the device before submitting a report.'}
-              </small>
-            </div>
           </div>
 
           <button type="submit" className={styles.submit} disabled={loading || saving || !canReport}>
@@ -225,7 +215,6 @@ export default function UserMarkAsStolen() {
         <div className={styles.sectionHeader}>
           <div>
             <h2 className={styles.sectionTitle}>My Stolen Reports</h2>
-            <p className={styles.subtitle}>Active and recovered reports from `/api/stolen/my-devices`.</p>
           </div>
           <button type="button" className={styles.secondaryBtn} onClick={loadData} disabled={loading}>
             Refresh
@@ -239,7 +228,7 @@ export default function UserMarkAsStolen() {
             {reports.map((report) => (
               <li key={report.id || report.deviceId} className={styles.reportItem}>
                 <div>
-                  <strong>Device {report.deviceId}</strong>
+                  <strong>{deviceLabel(report)}</strong>
                   <p>{report.formattedAddress || report.city || 'Saved report location'}</p>
                   <small>Reported {formatTimestamp(report.timestamp || report.createdAt)}</small>
                 </div>
@@ -275,7 +264,7 @@ export default function UserMarkAsStolen() {
           <dl className={styles.detailsList}>
             <div>
               <dt>Device</dt>
-              <dd>{selectedDetails.deviceId}</dd>
+              <dd>{deviceLabel(selectedDetails)}</dd>
             </div>
             <div>
               <dt>Report location</dt>

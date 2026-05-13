@@ -1,19 +1,18 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import ConfigPanel from '../../components/ConfigPanel'
 import styles from './AdminLayout.module.css'
-import { useState } from 'react'
 
 const navItems = [
-  { path: '/admin/dashboard', label: 'All Tracking' },
   { path: '/admin/stolen-requests', label: 'Stolen Requests' },
+  { path: '/admin/users', label: 'Users' },
+  { path: '/admin/stolen-reports', label: 'Stolen Reports' },
+  { path: '/admin/heatmap', label: 'Heatmap' },
 ]
 
 export default function AdminLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   const { logout, user } = useAuth()
-  const [configOpen, setConfigOpen] = useState(false)
 
   const handleLogout = async () => {
     await logout()
@@ -40,9 +39,12 @@ export default function AdminLayout() {
           ))}
         </nav>
         <div className={styles.actions}>
-          <button type="button" className={styles.configBtn} onClick={() => setConfigOpen(true)}>
-            ⚙ Settings
-          </button>
+          <Link
+            to="/admin/settings"
+            className={location.pathname === '/admin/settings' ? styles.navActive : styles.configBtn}
+          >
+            Settings
+          </Link>
           <span className={styles.userName}>{user?.name}</span>
           <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
             Logout
@@ -53,8 +55,6 @@ export default function AdminLayout() {
       <main className={styles.main}>
         <Outlet />
       </main>
-
-      <ConfigPanel open={configOpen} onClose={() => setConfigOpen(false)} />
     </div>
   )
 }

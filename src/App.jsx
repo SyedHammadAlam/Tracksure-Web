@@ -3,8 +3,10 @@ import { useAuth } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import PublicLayout from './components/PublicLayout'
 import AdminLayout from './pages/admin/AdminLayout'
-import AllTracking from './pages/admin/AllTracking'
 import StolenRequests from './pages/admin/StolenRequests'
+import UserManagement from './pages/admin/UserManagement'
+import AdminStolenReports from './pages/admin/AdminStolenReports'
+import Heatmap from './pages/admin/Heatmap'
 import UserLayout from './pages/user/UserLayout'
 import UserTracking from './pages/user/UserTracking'
 import UserMarkAsStolen from './pages/user/UserMarkAsStolen'
@@ -16,7 +18,7 @@ import Registration from './pages/Registration'
 function HomeRedirect() {
   const { user } = useAuth()
   if (!user) return <Navigate to="/login" replace />
-  if (user.role === 'admin') return <Navigate to="/admin/dashboard" replace />
+  if (user.role === 'admin' || user.isAdmin) return <Navigate to="/admin/users" replace />
   return <Navigate to="/user/tracking" replace />
 }
 
@@ -36,9 +38,12 @@ export default function App() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/admin/dashboard" replace />} />
-        <Route path="dashboard" element={<AllTracking />} />
+        <Route index element={<Navigate to="/admin/users" replace />} />
+        <Route path="users" element={<UserManagement />} />
+        <Route path="stolen-reports" element={<AdminStolenReports />} />
         <Route path="stolen-requests" element={<StolenRequests />} />
+        <Route path="heatmap" element={<Heatmap />} />
+        <Route path="settings" element={<UserSettings />} />
       </Route>
 
       <Route

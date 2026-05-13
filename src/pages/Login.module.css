@@ -39,32 +39,6 @@
   color: var(--accent);
 }
 
-.toggleGroup {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-}
-
-.toggle,
-.toggleActive {
-  flex: 1;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  font-size: 0.9rem;
-  background: transparent;
-  color: var(--text);
-}
-
-.toggle:hover {
-  background: var(--bg-toggled);
-}
-
-.toggleActive {
-  background: var(--bg-toggled);
-  color: var(--accent);
-}
-
 .error {
   color: #ff6666;
   font-size: 0.875rem;

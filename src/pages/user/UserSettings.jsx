@@ -23,7 +23,7 @@ function initials(name) {
 
 export default function UserSettings() {
   const navigate = useNavigate()
-  const { user, logout, updateCurrentUser } = useAuth()
+  const { user, logout, updateCurrentUser, isAdmin } = useAuth()
   const token = user?.accessToken
   const [profileExists, setProfileExists] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -278,7 +278,7 @@ export default function UserSettings() {
           </div>
 
           <div className={styles.actions}>
-            <button type="button" className={styles.secondaryBtn} onClick={() => navigate('/user/tracking')}>
+            <button type="button" className={styles.secondaryBtn} onClick={() => navigate(isAdmin ? '/admin/users' : '/user/tracking')}>
               Close
             </button>
             <button type="submit" className={styles.saveBtn} disabled={loading || saving}>

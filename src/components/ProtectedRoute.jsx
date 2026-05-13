@@ -9,10 +9,15 @@ export default function ProtectedRoute({ children, role }) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  if (role && user.role !== role) {
-    // Redirect to correct panel
-    if (user.role === 'admin') return <Navigate to="/admin/dashboard" replace />
-    return <Navigate to="/user/tracking" replace />
+  if (role) {
+    const normalizedUserRole = user.role === 'customer' || user.role === 'user' ? 'user' : user.role
+    const normalizedRequiredRole = role
+    
+    if (normalizedUserRole !== normalizedRequiredRole) {
+      // Redirect to correct panel
+      if (user.role === 'admin') return <Navigate to="/admin/users" replace />
+      return <Navigate to="/user/tracking" replace />
+    }
   }
 
   return children

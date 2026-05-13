@@ -40,3 +40,12 @@ export async function recoverStolenDevice(accessToken, deviceId) {
   return { ok: true, data: await res.json().catch(() => null) }
 }
 
+export async function getAdminStolenReportsGrouped(accessToken, { page = 0, size = 20 } = {}) {
+  const res = await apiFetch(`/api/stolen/admin/reports-by-user?page=${page}&size=${size}`, { token: accessToken })
+  if (!res.ok) {
+    return { ok: false, status: res.status, error: await parseApiError(res), data: [] }
+  }
+  const data = await res.json().catch(() => null)
+  return { ok: true, data: Array.isArray(data?.content) ? data.content : [], page: data }
+}
+
